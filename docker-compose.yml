@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+
+  comicon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-comicon:3307/comicon?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create
+    volumes:
+      - ./data:/data
+    depends_on:
+      mysql-comicon:
+        condition: service_healthy
+    networks:
+      - comicon-network
+
+
+  mysql-comicon:
+    image: mysql:latest
+    container_name: mysql-comicon
+    hostname: mysql-comicon
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: comicon
+    ports:
+      - "3307:3306"
+    networks:
+      - comicon-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-psecret" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  comicon-network:
+    driver: bridge
