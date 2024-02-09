@@ -1,4 +1,4 @@
-package es.pixar.comicom.models;
+package es.comicon.comic.models;
 //Estas librerias importan el contructor y los getter y setters
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

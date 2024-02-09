@@ -1,6 +1,6 @@
-package es.pixar.comicom.repositories;
+package es.comicon.comic.repositories;
 //El repositorio es una capa intermedia entre el controlador y el modelo
-import es.pixar.comicom.models.Category;
+import es.comicon.comic.models.Category;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

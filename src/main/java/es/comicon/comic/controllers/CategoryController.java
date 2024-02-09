@@ -1,8 +1,8 @@
-package es.pixar.comicom.controllers;
+package es.comicon.comic.controllers;
 
-import es.pixar.comicom.models.Category;
-import es.pixar.comicom.repositories.CategoryRepository;
-import jakarta.persistence.Id;
+
+import es.comicon.comic.models.Category;
+import es.comicon.comic.repositories.CategoryRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

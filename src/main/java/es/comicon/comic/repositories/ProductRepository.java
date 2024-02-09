@@ -1,6 +1,6 @@
-package es.pixar.comicom.repositories;
+package es.comicon.comic.repositories;
 
-import es.pixar.comicom.models.Product;
+import es.comicon.comic.models.Product;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

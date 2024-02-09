@@ -1,6 +1,10 @@
-package es.pixar.comicom.models;
+package es.comicon.comic.models;
 //Estas librerias importan el contructor y los getter y setters
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

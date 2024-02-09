@@ -1,7 +1,8 @@
-package es.pixar.comicom.controllers;
+package es.comicon.comic.controllers;
 
-import es.pixar.comicom.models.Product;
-import es.pixar.comicom.repositories.ProductRepository;
+
+import es.comicon.comic.models.Product;
+import es.comicon.comic.repositories.ProductRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
