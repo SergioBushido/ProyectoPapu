@@ -1,9 +1,6 @@
 package es.comicon.comic.models;
 //Estas librerias importan el contructor y los getter y setters
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +15,7 @@ import lombok.NonNull;
 
 public class Category {
     @Id//esto indica que es la clave primaria
-    @GeneratedValue//id autoincremental
+    @GeneratedValue(strategy= GenerationType.IDENTITY)//id autoincremental
     private int id;
     @NonNull
     private String name;
