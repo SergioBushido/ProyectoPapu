@@ -16,7 +16,7 @@ import java.util.Date;
 @Entity //para que lo combierta en tabla
 @AllArgsConstructor//contructor con todos los argumentos
 @NoArgsConstructor//sin argumentos
-@Data//getter y setters tostring equals..
+@Data// esto es de lomboc getter y setters tostring equals..
 @Table(name = "product")//nombre en minuscula para que no pille el de la clase
 
 public class Product {
