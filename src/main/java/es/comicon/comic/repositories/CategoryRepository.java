@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository//Para convertilo en repositorio
 public interface  CategoryRepository extends CrudRepository <Category, Integer> {
 }
-//Spring Data JPA quiere un repositorio para la entidad Category con un tipo de identificador Integer (tal como esta definido en su clase),
+//<Category, Integer>  hay que indicar esto porque Spring Data JPA quiere un repositorio para la entidad Category con un tipo de identificador Integer (tal como esta definido en su clase),
 // y este repositorio proporcionará automáticamente los métodos CRUD que alicará a las anotaciones @id @data que encontrara en la clase
 // (donde estará esta interface inyectada)

@@ -2,24 +2,33 @@ package es.comicon.comic.controllers;
 
 
 import es.comicon.comic.models.Product;
-import es.comicon.comic.repositories.ProductRepository;
 import es.comicon.comic.services.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @AllArgsConstructor
 public class ProductController {
 //al controlador se le inyecta el servicio (Productservice que lleva la notacion service
     //los controladores actuan directamente sobre los servicios y los servicios sobre los repositorios
 private final ProductService productService;
-@GetMapping("product/{id}")
-public Product getProduct(@PathVariable int id) throws Exception {
+/*
+    //Mostrar por id ...esta mierda no va en postman
+    @GetMapping("product/{id}")
+    public Product getProduct(@PathVariable int id) throws Exception {
+    return productService.getProductById(id);
+    }*/
+
+    //Mostrar por id
+@GetMapping("/product/{id}")
+public ResponseEntity<Product> getProduct(@PathVariable int id) {
     return productService.getProductById(id);
 }
+
 
     //get
     @GetMapping("/products")
@@ -43,6 +52,7 @@ public Product getProduct(@PathVariable int id) throws Exception {
     }
 
 
+    //Actualizar
     @PutMapping("/product/{id}")
     @ResponseBody
     public Product updateProduct(@PathVariable int id, @RequestBody Product product) throws Exception {

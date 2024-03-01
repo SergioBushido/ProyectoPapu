@@ -3,21 +3,36 @@ package es.comicon.comic.services;
 import es.comicon.comic.models.Product;
 import es.comicon.comic.repositories.ProductRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class ProductService {
 
     private ProductRepository productRepository;//inyectamos como atributo la interface que ademas tiene la extiende de crudrepository
-
-    //mostrar por id
+/*
+    //mostrar por id esta mierda no va
     public Product getProductById(@PathVariable int id) throws Exception {
         return productRepository.findById(id).orElseThrow(() -> new Exception("Producto not found with id: " + id));
+    }*/
+
+    //mostrar por id
+public ResponseEntity<Product> getProductById(int id) {
+    Optional<Product> product = productRepository.findById(id);
+    if (product.isPresent()) {
+        return new ResponseEntity<>(product.get(), HttpStatus.OK);
+    } else {
+        // Producto no encontrado
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+}
+
 
 
     //para mostrarlo todo

@@ -17,6 +17,7 @@ public class CategoryService {
 
 
 
+    //Mostrar por id
     public Category getCategoryById(int id) throws Exception {
         //la ia dice que pathvariable se utiliza en el controlador
        // public Category getCategoryById(@PathVariable int id) throws Exception {
@@ -32,14 +33,30 @@ public class CategoryService {
     }
 
     //Metodo para insertar
-
    // public void setCategory(@RequestParam String name){
    //     categoryRepository.save(name);
    // }
+
+    public Category addCategory(Category category) {
+        category.setId(0);
+        return categoryRepository.save(category);
+    }
+
+    //Metodo para actualizar
+    public Category updateCategory(Category category) throws Exception {
+        // Comprobar si la categoría con el ID dado existe
+        if (category.getId() <= 0 || !categoryRepository.existsById(category.getId())) {
+            throw new Exception("Category not found with id: " + category.getId());
+        }
+        return categoryRepository.save(category);
+    }
+
+
 
     public void deleteById(int id){
        // public void deleteById(@RequestParam int id){
 
             categoryRepository.deleteById(id);
     }
+
 }
