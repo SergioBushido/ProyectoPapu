@@ -38,7 +38,6 @@ public class CategoryService {
    // }
 
     public Category addCategory(Category category) {
-        category.setId(0);
         return categoryRepository.save(category);
     }
 

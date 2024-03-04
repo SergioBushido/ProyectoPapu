@@ -53,9 +53,4 @@ public class CategoryController {
     public Category updateCategory(@RequestBody Category category) throws Exception {
         return categoryService.updateCategory(category);
     }
-
-
-
-
-
 }
