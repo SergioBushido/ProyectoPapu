@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/v1")
 public class ProductController {
 //al controlador se le inyecta el servicio (Productservice que lleva la notacion service
     //los controladores actuan directamente sobre los servicios y los servicios sobre los repositorios

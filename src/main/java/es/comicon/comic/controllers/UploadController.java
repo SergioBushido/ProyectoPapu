@@ -1,6 +1,13 @@
 package es.comicon.comic.controllers;
 
 
+import es.comicon.comic.models.Category;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpStatus;
@@ -12,13 +19,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
 
+@Tag(name = "UploadController", description = "Controlador para operaciones relacionadas con la subida de ficheros")
 @RestController
-@RequestMapping("/api/files")
+@RequestMapping("/api/v1")
 @Slf4j
 public class UploadController {
 
     private final Path rootLocation = Paths.get("fileUploads");
 
+    @Operation(summary = "Realiza la subida de un fichero")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fichero subido exitosamente",
+                    content = @Content(schema = @Schema(implementation = Category.class))),
+            @ApiResponse(responseCode = "500", description = "Error al subir el fichero")
+    })
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {

@@ -1,61 +1,67 @@
 package es.comicon.comic.controllers;
 
-
 import es.comicon.comic.models.Category;
 import es.comicon.comic.services.CategoryService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
-@Controller//le indicamos al Frame Work que esto es un controlador
+@Tag(name = "CategoryController", description = "Controlador para operaciones relacionadas con categorías")
+@RestController
 @AllArgsConstructor
+@RequestMapping("/api/v1")
 public class CategoryController {
 
-    private CategoryService categoryService;//inyectamos la calse categoryservice ( que tiene inyectada categoryrepository que esta a su vez extiende de crudrepository) con esta inyeccion se puede operar desde el controlador indirectamente en la base de datos
+    private final CategoryService categoryService;
 
-
-    //Mostrar por id
-    @GetMapping("/category/{id}") // Asumiendo que la ruta del endpoint es "/category/{id}"
-    @ResponseBody
-    /* Esta anotación indica que la respuesta del método debe ser vinculada al cuerpo de la respuesta HTTP, convirtiendo el objeto Category
-    (o la lista de objetos Category) en JSON u otro formato de respuesta adecuado, según la configuración de Spring MVC.*/
-    public Category getCategoryById(@PathVariable int id) throws Exception {
+    @Operation(summary = "Obtiene una categoría por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Categoría encontrada exitosamente",
+                    content = @Content(schema = @Schema(implementation = Category.class))),
+            @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
+    })
+    @GetMapping("/category/{id}")
+    public Category getCategoryById(@Parameter(description = "ID de la categoría a obtener", required = true)
+                                    @PathVariable int id) throws Exception {
         return categoryService.getCategoryById(id);
     }
 
-    //mostrar
+    @Operation(summary = "Obtiene todas las categorías disponibles")
     @GetMapping("/categories")
-    @ResponseBody
     public List<Category> getCategories(){
-       return categoryService.getCategories();
+        return categoryService.getCategories();
     }
 
-    //Eliminar
+    @Operation(summary = "Elimina una categoría por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Categoría eliminada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
+    })
     @DeleteMapping("/category/{id}")
-    @ResponseBody
-    public void deleteById(@PathVariable int id) {
+    public void deleteById(@Parameter(description = "ID de la categoría a eliminar", required = true)
+                           @PathVariable int id) {
         categoryService.deleteById(id);
     }
 
-    //Insertar
+    @Operation(summary = "Añade una nueva categoría")
     @PostMapping("/category")
-    @ResponseBody
-    public Category addCategory(@RequestBody Category category) {
+    public Category addCategory(@Parameter(description = "Objeto categoría que será añadido", required = true)
+                                @RequestBody Category category) {
         return categoryService.addCategory(category);
     }
 
-    //Actualizar
+    @Operation(summary = "Actualiza una categoría existente")
     @PutMapping("/category")
-    @ResponseBody
-    public Category updateCategory(@RequestBody Category category) throws Exception {
+    public Category updateCategory(@Parameter(description = "Objeto categoría que será actualizado", required = true)
+                                   @RequestBody Category category) throws Exception {
         return categoryService.updateCategory(category);
     }
-
-
-
-
-
 }
