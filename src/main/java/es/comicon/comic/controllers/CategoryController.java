@@ -1,10 +1,9 @@
 package es.comicon.comic.controllers;
 
 
-import es.comicon.comic.models.Category;
+import es.comicon.comic.models.dto.CategoryDto;
 import es.comicon.comic.services.CategoryService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,14 +21,14 @@ public class CategoryController {
     @ResponseBody
     /* Esta anotación indica que la respuesta del método debe ser vinculada al cuerpo de la respuesta HTTP, convirtiendo el objeto Category
     (o la lista de objetos Category) en JSON u otro formato de respuesta adecuado, según la configuración de Spring MVC.*/
-    public Category getCategoryById(@PathVariable int id) throws Exception {
+    public CategoryDto getCategoryById(@PathVariable int id) throws Exception {
         return categoryService.getCategoryById(id);
     }
 
     //mostrar
     @GetMapping("/categories")
     @ResponseBody
-    public List<Category> getCategories(){
+    public List<CategoryDto> getCategories(){
        return categoryService.getCategories();
     }
 
@@ -43,14 +42,14 @@ public class CategoryController {
     //Insertar
     @PostMapping("/category")
     @ResponseBody
-    public Category addCategory(@RequestBody Category category) {
+    public CategoryDto addCategory(@RequestBody CategoryDto category) {
         return categoryService.addCategory(category);
     }
 
     //Actualizar
-    @PutMapping("/category")
+    @PutMapping("/category/{id}")
     @ResponseBody
-    public Category updateCategory(@RequestBody Category category) throws Exception {
-        return categoryService.updateCategory(category);
+    public CategoryDto updateCategory(@PathVariable int id, @RequestBody CategoryDto category) throws Exception {
+        return categoryService.updateCategory(id, category);
     }
 }
