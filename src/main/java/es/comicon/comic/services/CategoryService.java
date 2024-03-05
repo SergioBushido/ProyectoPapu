@@ -31,7 +31,7 @@ public class CategoryService {
     //en este caso queremos trabajar con list ...asi que por eso hacemos un casteo
     @Transactional
     public List<CategoryDto> getCategories() {
-        return categoryRepository.findAllBy()
+        return categoryRepository.findAll().stream()
                 .map(category -> CategoryDto.builder().name(category.getName()).build())
                 .collect(Collectors.toList());
     }
