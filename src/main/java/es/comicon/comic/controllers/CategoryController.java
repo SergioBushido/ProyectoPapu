@@ -26,7 +26,7 @@ public class CategoryController {
     @Operation(summary = "Obtiene una categoría por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Categoría encontrada exitosamente",
-                    content = @Content(schema = @Schema(implementation = Category.class))),
+                    content = @Content(schema = @Schema(implementation = CategoryDto.class))),
             @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
     })
     @GetMapping("/category/{id}")
@@ -60,9 +60,9 @@ public class CategoryController {
     }
 
     @Operation(summary = "Actualiza una categoría existente")
-    @PutMapping("/category")
-    public CategoryDto updateCategory(@Parameter(description = "Objeto categoría que será actualizado", required = true)
+    @PutMapping("/category/{id}")
+    public CategoryDto updateCategory(@PathVariable int id, @Parameter(description = "Objeto categoría que será actualizado", required = true)
                                    @RequestBody CategoryDto categoryDto) throws Exception {
-        return categoryService.updateCategory(categoryDto);
+        return categoryService.updateCategory(id, categoryDto);
     }
 }

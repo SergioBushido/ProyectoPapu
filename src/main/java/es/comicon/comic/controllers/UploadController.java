@@ -22,11 +22,19 @@ import java.io.IOException;
 @Tag(name = "UploadController", description = "Controlador para operaciones relacionadas con la subida de ficheros")
 @RestController
 @RequestMapping("/api/v1")
-@Slf4j
+@Slf4j//libreria para crear log (eventos,errores,etc)
 public class UploadController {
 
-    private final Path rootLocation = Paths.get("fileUploads");
+    private final Path rootLocation = Paths.get("pollas");//indicamos con Path donde esta el directorio en raiz donde se guarda lo que suba
 
+    // Constructor para crear el directorio si no existe
+    public UploadController() {
+        try {
+            Files.createDirectories(rootLocation);
+        } catch (IOException e) {
+            throw new RuntimeException("No se pudo inicializar el directorio de almacenamiento.", e);
+        }
+    }
     @Operation(summary = "Realiza la subida de un fichero")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Fichero subido exitosamente",
@@ -34,6 +42,7 @@ public class UploadController {
             @ApiResponse(responseCode = "500", description = "Error al subir el fichero")
     })
     @PostMapping("/upload")
+    //ResponseEntity transforma en json las peticiones...el forntal no se enteraria si le envias un int o un string, por eso lo transforma
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("No se ha seleccionado un archivo para subir.");
@@ -56,21 +65,12 @@ public class UploadController {
 
             // Guardado del archivo
             // TODO TAREA - faltaría controlar que el archivo ya haya sido subido
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(fileName));
-            log.info("Archivo subido correctamente: {}", fileName);
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(fileName));//le dice la ruta donde copiar el archivo
+            log.info("Archivo subido correctamente: {}", fileName);//sistema de log que viene por la notacion @Slf4j
             return ResponseEntity.ok("Archivo subido con éxito: " + fileName);
         } catch (IOException e) {
             log.error("Error al guardar el archivo", e);
             return ResponseEntity.internalServerError().body("Error al subir el archivo: " + e.getMessage());
-        }
-    }
-
-    // Constructor para crear el directorio si no existe
-    public UploadController() {
-        try {
-            Files.createDirectories(rootLocation);
-        } catch (IOException e) {
-            throw new RuntimeException("No se pudo inicializar el directorio de almacenamiento.", e);
         }
     }
 }
