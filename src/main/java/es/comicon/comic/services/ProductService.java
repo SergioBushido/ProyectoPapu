@@ -52,7 +52,7 @@ public ResponseEntity<Product> getProductById(int id) {
     public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
-
+    //recibe un parametro que es una instancia de la clase Product
 
     //Metodo para actualizar
     public Product updateProduct(int id, Product updatedProduct) throws Exception {
