@@ -1,6 +1,7 @@
 package es.comicon.comic.services;
 
 import es.comicon.comic.models.Category;
+import es.comicon.comic.models.Product;
 import es.comicon.comic.models.dto.CategoryDto;
 import es.comicon.comic.repositories.CategoryRepository;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,10 @@ public class CategoryService {
     //Mostrar por id
     public CategoryDto getCategoryById(int id) {
         return categoryRepository.findById(id)
-                .map(category -> CategoryDto.builder().name(category.getName()).build())
+                .map(category -> CategoryDto.builder()
+                        .id(category.getId())
+                        .name(category.getName())
+                        .build())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
     }
 
@@ -32,7 +36,10 @@ public class CategoryService {
     @Transactional
     public List<CategoryDto> getCategories() {
         return categoryRepository.findAll().stream()
-                .map(category -> CategoryDto.builder().name(category.getName()).build())
+                .map(category -> CategoryDto.builder()
+                        .id(category.getId())
+                        .name(category.getName())
+                        .build())
                 .collect(Collectors.toList());
     }
 
@@ -48,10 +55,7 @@ public class CategoryService {
     //Metodo para actualizar
     public CategoryDto updateCategory(int id, CategoryDto categoryDto) throws Exception {
         // Comprobar si la categoría con el ID dado existe
-        if (!categoryRepository.existsById(id)) {
-            throw new Exception("Category not found with id: " + id);
-        }
-        Category category = new Category();
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new Exception("Category not found with id: " + id));
         category.setName(categoryDto.getName());
         categoryRepository.save(category);
         return categoryDto;

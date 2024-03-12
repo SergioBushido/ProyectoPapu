@@ -7,11 +7,12 @@ import lombok.*;
 @Data
 @Builder
 public class ProductDto {
+    private  int id;
     @NonNull
     private String name;
-    private String descripcion;
+    private String description;
     @NonNull
-    private Double precio;
-    private boolean oferta;
+    private Double price;
+    private boolean offer;
 
 }
