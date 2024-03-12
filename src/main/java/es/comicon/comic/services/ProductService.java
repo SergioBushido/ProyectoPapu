@@ -64,7 +64,7 @@ public ProductDto getProductById(int id) {
         return productDto;
 
     }
-
+    //recibe un parametro que es una instancia de la clase Product
 
     //Metodo para actualizar corregido a dto
     public ProductDto updateProduct(int id, ProductDto productDto) throws Exception {
