@@ -17,6 +17,7 @@ import java.util.List;
 
 @Tag(name = "CategoryController", description = "Controlador para operaciones relacionadas con categorías")
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @AllArgsConstructor
 @RequestMapping("/api/v1")
 public class CategoryController {

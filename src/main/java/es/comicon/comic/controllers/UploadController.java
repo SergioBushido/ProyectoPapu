@@ -21,6 +21,7 @@ import java.io.IOException;
 
 @Tag(name = "UploadController", description = "Controlador para operaciones relacionadas con la subida de ficheros")
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/v1")
 @Slf4j//libreria para crear log (eventos,errores,etc)
 public class UploadController {

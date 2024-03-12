@@ -8,6 +8,7 @@ WORKDIR /app
 COPY . /app
 
 # Paso 4: Ejecutar el build de la aplicación Spring Boot
+RUN chmod +x ./gradlew
 RUN ./gradlew clean build -x test
 
 # Paso 3: Copiar el archivo JAR de tu aplicación al directorio de trabajo del contenedor
