@@ -71,7 +71,7 @@ public class CategoryServiceTest {
         category2.setName("Acción");
         List<Category> categories = Arrays.asList(category1, category2);
 
-        when(categoryRepository.findAllBy()).thenReturn(categories.stream());
+        when(categoryRepository.findAll()).thenReturn(categories);
 
         // When
         List<CategoryDto> result = categoryService.getCategories();
@@ -109,9 +109,11 @@ public class CategoryServiceTest {
 
         Category category = new Category();
         category.setName("Fantasía");
+        category.setId(categoryId);
 
-        when(categoryRepository.existsById(categoryId)).thenReturn(true);
-        when(categoryRepository.save(any(Category.class))).thenReturn(category);
+
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+        when(categoryRepository.save(category)).thenReturn(category);
 
         // When
         CategoryDto result = categoryService.updateCategory(categoryId, categoryDto);
@@ -127,7 +129,7 @@ public class CategoryServiceTest {
         CategoryDto categoryDto = new CategoryDto();
         categoryDto.setName("Fantasía");
 
-        when(categoryRepository.existsById(categoryId)).thenReturn(false);
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         // When and Then
         assertThrows(Exception.class, () -> {
