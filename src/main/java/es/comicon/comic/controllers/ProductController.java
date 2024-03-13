@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,12 +25,6 @@ public class ProductController {
 //al controlador se le inyecta el servicio (Productservice que lleva la notacion service
     //los controladores actuan directamente sobre los servicios y los servicios sobre los repositorios
 private final ProductService productService;
-/*
-    //Mostrar por id ...esta mierda no va en postman
-    @GetMapping("product/{id}")
-    public Product getProduct(@PathVariable int id) throws Exception {
-    return productService.getProductById(id);
-    }*/
 
     //Mostrar por id actualizado a dto
     @Operation(summary = "Obtiene un producto por su ID")
@@ -38,11 +33,12 @@ private final ProductService productService;
                     content = @Content(schema = @Schema(implementation = ProductDto.class))),
             @ApiResponse(responseCode = "404", description = "Product no encontrado")
     })
-@GetMapping("/product/{id}")
-public ProductDto getProductById(@Parameter(description = "ID de la producto a obtener", required = true)
-                                   @PathVariable int id) throws Exception {
-    return productService.getProductById(id);
-}
+    @PreAuthorize("hasRole('ROLE_REGISTER_USER')")
+    @GetMapping("/product/{id}")
+    public ProductDto getProductById(@Parameter(description = "ID de la producto a obtener", required = true)
+                                       @PathVariable int id) throws Exception {
+        return productService.getProductById(id);
+    }
 
     //get actualizao a dto
     @Operation(summary = "Obtiene todas los productos disponibles")
@@ -58,6 +54,7 @@ public ProductDto getProductById(@Parameter(description = "ID de la producto a o
             @ApiResponse(responseCode = "200", description = "Producto eliminado exitosamente"),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/product/{id}")
    // @ResponseBody
     public void deleteProductById(@Parameter(description = "ID de la Producto a eliminar", required = true)
@@ -67,8 +64,12 @@ public ProductDto getProductById(@Parameter(description = "ID de la producto a o
 
     //insert corregido a dto
     @Operation(summary = "Añade un nuevo Producto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Producto creado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "El Producto no se ha podido crear")
+    })
+    @PreAuthorize("hasRole('ROLE_REGISTER_USER') and hasAuthority('REGISTER_USER_CREATE')")
     @PostMapping("/product")
-
     public ProductDto addProduct(@Parameter(description = "Objeto producto que será añadido", required = true)
             @RequestBody ProductDto productDto) {
         return productService.addProduct(productDto);
