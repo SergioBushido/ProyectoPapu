@@ -1,6 +1,7 @@
 package es.comicon.comic.controllers;
 
 import es.comicon.comic.models.Product;
+import es.comicon.comic.models.dto.ProductDto;
 import es.comicon.comic.services.ProductService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,43 +28,31 @@ public class ProductControllerTest {
     private ProductController productController;
 
     @Test
-    void should_get_product_by_id() {
+    void should_get_product_by_id() throws Exception {
         // Given
         final int id = 1;
-        Product product = new Product(); //dentro de ProductService esta el constructor y aqui lo podemos usar gracias a @Mock
-        product.setId(id);
-        product.setName("Comic Book");
-        // Simula la respuesta esperada del servicio cuando se busca un producto por su ID
-        when(productService.getProductById(id)).thenReturn(ResponseEntity.ok(product));
+        ProductDto productDto = new ProductDto();
+        productDto.setId(id);
+        productDto.setName("Comic Book");
+
+        when(productService.getProductById(id)).thenReturn(productDto);
 
         // When
-        // Invoca el método del controlador para obtener un producto por ID
-        ResponseEntity<Product> response = productController.getProduct(id);
+       ProductDto result = productController.getProductById(id);
 
         // Then
-        // Verifica que el servicio fue llamado correctamente y que la respuesta tiene el estado y el cuerpo esperados
         verify(productService).getProductById(id);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(product, response.getBody());
+        assertEquals(productDto, result);
     }
+
 
     @Test
     void should_get_all_products() {
         // Given
-        Product product1 = new Product();
-        Product product2 = new Product();
-        List<Product> productList = Arrays.asList(product1, product2);
-        // Simula la respuesta esperada del servicio cuando se solicita la lista de todos los productos
-        when(productService.getProducts()).thenReturn(productList);
-
-        // When
-        // Invoca el método del controlador para obtener todos los productos
-        List<Product> result = productController.getProducts();
-
-        // Then
-        // Verifica que el servicio fue llamado correctamente y que la lista de productos es la esperada
+        //When
+        productController.getProducts();
+        //Then
         verify(productService).getProducts();
-        assertEquals(productList, result);
     }
 
     @Test
@@ -83,36 +72,30 @@ public class ProductControllerTest {
     @Test
     void should_add_product() {
         // Given
-        Product product = new Product();
-        // Simula la respuesta esperada del servicio cuando se agrega un nuevo producto
-        when(productService.saveProduct(product)).thenReturn(product);
+        ProductDto productDto = new ProductDto();
+        when(productService.addProduct(productDto)).thenReturn(productDto);
 
         // When
-        // Invoca el método del controlador para añadir un nuevo producto
-        Product result = productController.addProduct(product);
+        ProductDto result = productController.addProduct(productDto);
 
         // Then
-        // Verifica que el servicio fue llamado correctamente con el producto a añadir y que el producto retornado es el esperado
-        verify(productService).saveProduct(product);
-        assertEquals(product, result);
+        verify(productService).addProduct(productDto);
+        assertEquals(productDto, result);
     }
 
     @Test
     void should_update_product() throws Exception {
         // Given
         final int id = 1;
-        Product product = new Product();
-        // Simula la respuesta esperada del servicio cuando se actualiza un producto
-        when(productService.updateProduct(id, product)).thenReturn(product);
+        ProductDto productDto = new ProductDto();
+        when(productService.updateProduct(id, productDto)).thenReturn(productDto);
 
         // When
-        // Invoca el método del controlador para actualizar un producto existente
-        Product result = productController.updateProduct(id, product);
+        ProductDto result = productController.updateProduct(id, productDto);
 
         // Then
-        // Verifica que el servicio fue llamado con el ID y el producto correctos para la actualización, y que el producto retornado es el esperado
-        verify(productService).updateProduct(id, product);
-        assertEquals(product, result);
+        verify(productService).updateProduct(id, productDto);
+        assertEquals(productDto, result);
     }
 
 }

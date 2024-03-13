@@ -1,6 +1,9 @@
 package es.comicon.comic.services;
 
+import es.comicon.comic.models.Category;
 import es.comicon.comic.models.Product;
+import es.comicon.comic.models.dto.CategoryDto;
+import es.comicon.comic.models.dto.ProductDto;
 import es.comicon.comic.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -32,17 +36,16 @@ public class ProductServiceTest {
     void getProductByIdFound() {
         // Given
         final int id = 1;
-        Product product = new Product();
-        product.setId(id);
-        product.setName("Test Product");
-        when(productRepository.findById(id)).thenReturn(Optional.of(product));
+        Product mockProduct = new Product();
+        mockProduct.setName("Comedia");
+        mockProduct.setPrecio(11.1);
+        when(productRepository.findById(id)).thenReturn(Optional.of(mockProduct));
 
         // When
-        ResponseEntity<Product> response = productService.getProductById(id);
+        ProductDto result = productService.getProductById(id);
 
         // Then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(product, response.getBody());
+        assertEquals("Comedia", result.getName());
     }
 
     @Test
@@ -51,56 +54,83 @@ public class ProductServiceTest {
         final int id = 1;
         when(productRepository.findById(id)).thenReturn(Optional.empty());
 
-        // When
-        ResponseEntity<Product> response = productService.getProductById(id);
-
-        // Then
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        // When and Then
+        assertThrows(ResourceNotFoundException.class, () -> {
+            // This is where the exception is expected to be thrown
+            productService.getProductById(id);
+        });
     }
+
 
     @Test
     void getProductsSuccess() {
-        // Given
-        List<Product> productList = Arrays.asList(new Product(), new Product());
-        when(productRepository.findAll()).thenReturn(productList);
+        Product product1 = new Product();
+        product1.setName("loquesea");
+        product1.setPrecio(20.2);
+        Product product2 = new Product();
+        product2.setName("mierdicion");
+        product2.setPrecio(99.1);
+        List<Product> products= Arrays.asList(product1, product2);
+
+        when(productRepository.findAll()).thenReturn(products);
 
         // When
-        List<Product> result = productService.getProducts();
+        List<ProductDto> result = productService.getProducts();
 
         // Then
-        assertEquals(productList.size(), result.size());
+        assertEquals(2, result.size());
+        assertEquals("loquesea", result.get(0).getName());
+        assertEquals("mierdicion", result.get(1).getName());
     }
 
     @Test
     void saveProductSuccess() {
         // Given
+        ProductDto newProductDto = new ProductDto();
+        newProductDto.setName("loquesea");
+        newProductDto.setPrice(66.4);
+
+        Product newProduct= new Product();
+        newProduct.setName("loquesea");
+
+        when(productRepository.save(any(Product.class))).thenReturn(newProduct);
+
+        // When
+        ProductDto result = productService.addProduct(newProductDto);
+
+        // Then
+        assertEquals("loquesea", result.getName());
+    }
+    @Test
+    void updateProductSuccess() throws Exception {
+        // Given
+
+        //hay que crear 2 objetos el segundo lo creamos con el builder y referencia al primero
+        //se pueden poner los datos dentro del builder o se pueden utilizar los getters
+        final int id = 1;
         Product product = new Product();
-        product.setName("New Product");
+        product.setPrecio(100.3);
+        product.setName("mierdas");
+        product.setDescripcion("mierda");
+        product.setOferta(true);
+
+        final var updatedProduct = ProductDto.builder()
+                .id(id)
+                //builder es un metodo statico para hacer instancias de clase
+                //(que es lo mismo que hacer un new ProductDto
+                .price(100.3)
+                .name("mierdas")
+                .description("mierda")
+                .offer(true)
+                .build();
+        //se empieza con builder y se acaba con build
+
+
+        when(productRepository.findById(id)).thenReturn(Optional.of(product));
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         // When
-        Product result = productService.saveProduct(product);
-
-        // Then
-        assertEquals(product.getName(), result.getName());
-    }
-
-    @Test//Hay que meter todas las propiedades del producto??la del precio hay que meterla si o si por el not null
-    void updateProductSuccess() throws Exception {
-        // Given
-        final int id = 1;
-        Product existingProduct = new Product();
-        existingProduct.setId(id);
-        Product updatedProduct = new Product();
-        updatedProduct.setName("Updated Name");
-        updatedProduct.setPrecio(100.20);
-        updatedProduct.getDescripcion();
-        updatedProduct.getStock();
-        when(productRepository.findById(id)).thenReturn(Optional.of(existingProduct));
-        when(productRepository.save(any(Product.class))).thenReturn(updatedProduct);
-
-        // When
-        Product result = productService.updateProduct(id, updatedProduct);
+        ProductDto result = productService.updateProduct(id, updatedProduct);
 
         // Then
         assertEquals(updatedProduct.getName(), result.getName());
@@ -110,11 +140,16 @@ public class ProductServiceTest {
     void updateProductNotFound() {
         // Given
         final int id = 1;
-        Product updatedProduct = new Product();
+        //ProductDto updatedProduct = new ProductDto();
+        //esto es lo mismo que lo de arriba
+        final var updatedProductDto = ProductDto.builder()
+                .name("joder")
+                .price(222.2)
+                .build();
         when(productRepository.findById(id)).thenReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(Exception.class, () -> productService.updateProduct(id, updatedProduct));
+        Exception exception = assertThrows(Exception.class, () -> productService.updateProduct(id, updatedProductDto));
         assertEquals("Producto not found with id: " + id, exception.getMessage());
     }
 
