@@ -34,7 +34,7 @@ public class AuthenticationController {
     @Operation(summary = "Registrar un usuario nuevo")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario registrado exitosamente",
-                    content = @Content(schema = @Schema(implementation = ProductDto.class))),
+                    content = @Content(schema = @Schema(implementation = RegisterRequest.class))),
                 @ApiResponse(responseCode = "404", description = "Usuario no registrado")
     })
     @PostMapping("/register")
@@ -43,11 +43,12 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
-    @Operation(summary = "Autneticar un usuario registrado")
+    @Operation(summary = "Authenticate un usuario registrado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario authenticado exitosamente",
-                    content = @Content(schema = @Schema(implementation = ProductDto.class))),
-            @ApiResponse(responseCode = "404", description = "Usuario no authentificado")
+                    content = @Content(schema = @Schema(implementation = AuthenticationRequest.class))),
+            @ApiResponse(responseCode = "404", description = "Usuario no authentificado",
+                    content = @Content(schema = @Schema(implementation = AuthenticationResponse.class)))
     })
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
@@ -57,7 +58,7 @@ public class AuthenticationController {
     @Operation(summary = "Refrescar el token de un usuario autenticado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario registrado exitosamente",
-                    content = @Content(schema = @Schema(implementation = ProductDto.class))),
+                    content = @Content(schema = @Schema(implementation = HttpServletRequest.class))),
             @ApiResponse(responseCode = "404", description = "Token no refrescado")
     })
     @PostMapping("/refresh-token")

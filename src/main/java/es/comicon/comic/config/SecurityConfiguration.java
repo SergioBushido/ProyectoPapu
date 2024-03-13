@@ -41,6 +41,7 @@ public class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/favicon.ico", "/swagger-resources/**", "/webjars/**")
                         .permitAll()
+                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate", "/api/v1/auth/refresh-token").permitAll()
                         .requestMatchers("/admin/**").hasRole(ADMIN.name())
                         .requestMatchers(GET, "/admin/**").hasAuthority(ADMIN_READ.name())
                         .requestMatchers(POST, "/admin/**").hasAuthority(ADMIN_CREATE.name())
