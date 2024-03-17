@@ -34,11 +34,11 @@ public class Product {
     //@Column(unique = true) cuando necesitas un valor unico en la tabla
     private String descripcion;
     @NonNull
-    private Double precio;
+    private Double price;
     @NonNull
     private int stock;
-    private boolean oferta;
-    private Date fecha;
+    private boolean offer;
+    private Date date;
    // private imagen;
 
 

@@ -24,8 +24,8 @@ public ProductDto getProductById(int id) {
                     .id(product.getId())
                     .name(product.getName())
                     .description(product.getDescripcion())
-                    .offer(product.isOferta())
-                    .price(product.getPrecio())
+                    .offer(product.isOffer())
+                    .price(product.getPrice())
                     .build())
             .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 }
@@ -40,8 +40,8 @@ public ProductDto getProductById(int id) {
                         .id(product.getId())
                         .name(product.getName())
                         .description(product.getDescripcion())
-                        .offer(product.isOferta())
-                        .price(product.getPrecio())
+                        .offer(product.isOffer())
+                        .price(product.getPrice())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -58,7 +58,7 @@ public ProductDto getProductById(int id) {
         Product product = new Product();
         product.setName(productDto.getName());
         product.setDescripcion(productDto.getDescription());
-        product.setPrecio(productDto.getPrice());
+        product.setPrice(productDto.getPrice());
         productDto.setOffer(productDto.isOffer());
         productRepository.save(product);
         return productDto;
@@ -74,8 +74,8 @@ public ProductDto getProductById(int id) {
         // Actualizar las propiedades del producto
         product.setName(productDto.getName());
         product.setDescripcion(productDto.getDescription());
-        product.setPrecio(productDto.getPrice());
-        product.setOferta(productDto.isOffer());
+        product.setPrice(productDto.getPrice());
+        product.setOffer(productDto.isOffer());
 
         productRepository.save(product);
         return productDto;
