@@ -2,6 +2,7 @@ package es.comicon.comic.controllers;
 
 
 import es.comicon.comic.models.Category;
+import es.comicon.comic.services.UploadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,9 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.io.IOException;
 
 @Tag(name = "UploadController", description = "Controlador para operaciones relacionadas con la subida de ficheros")
@@ -27,16 +25,8 @@ import java.io.IOException;
 @Slf4j//libreria para crear log (eventos,errores,etc)
 public class UploadController {
 
-    private final Path rootLocation = Paths.get("pollas");//indicamos con Path donde esta el directorio en raiz donde se guarda lo que suba
+    private UploadService uploadService;
 
-    // Constructor para crear el directorio si no existe
-    public UploadController() {
-        try {
-            Files.createDirectories(rootLocation);
-        } catch (IOException e) {
-            throw new RuntimeException("No se pudo inicializar el directorio de almacenamiento.", e);
-        }
-    }
     @Operation(summary = "Realiza la subida de un fichero")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Fichero subido exitosamente",
@@ -52,28 +42,23 @@ public class UploadController {
         }
 
         String contentType = file.getContentType();
-        if (!"application/pdf".equals(contentType) && !"application/msword".equals(contentType) && !"application/vnd.openxmlformats-officedocument.wordprocessingml.document".equals(contentType)) {
+        if (!isSupportedContentType(contentType)) {
             return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("Tipo de archivo no permitido.");
         }
 
         try {
-            // Sanitización del nombre del archivo
-            String fileName = "";
-            String originalName = file.getOriginalFilename();
-            if (originalName != null) {
-                fileName = originalName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
-            } else {
-                fileName = "defaultName";
-            }
-
-            // Guardado del archivo
-            // TODO TAREA - faltaría controlar que el archivo ya haya sido subido
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(fileName));//le dice la ruta donde copiar el archivo
-            log.info("Archivo subido correctamente: {}", fileName);//sistema de log que viene por la notacion @Slf4j
+            String fileName = uploadService.store(file);
+            log.info("Archivo subido correctamente: {}", fileName);
             return ResponseEntity.ok("Archivo subido con éxito: " + fileName);
         } catch (IOException e) {
             log.error("Error al guardar el archivo", e);
             return ResponseEntity.internalServerError().body("Error al subir el archivo: " + e.getMessage());
         }
+    }
+
+    private boolean isSupportedContentType(String contentType) {
+        return "application/pdf".equals(contentType) ||
+                "application/msword".equals(contentType) ||
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document".equals(contentType);
     }
 }
