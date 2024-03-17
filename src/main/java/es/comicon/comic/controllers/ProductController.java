@@ -26,21 +26,21 @@ public class ProductController {
     //los controladores actuan directamente sobre los servicios y los servicios sobre los repositorios
 private final ProductService productService;
 
-    //Mostrar por id actualizado a dto
+    // Mostrar por id
     @Operation(summary = "Obtiene un producto por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto encontrado exitosamente",
                     content = @Content(schema = @Schema(implementation = ProductDto.class))),
             @ApiResponse(responseCode = "404", description = "Product no encontrado")
     })
-    @PreAuthorize("hasRole('ROLE_REGISTER_USER')")
+    @PreAuthorize("hasRole('ROLE_REGISTER_USER') and hasAuthority('REGISTER_USER_READ')")
     @GetMapping("/product/{id}")
     public ProductDto getProductById(@Parameter(description = "ID de la producto a obtener", required = true)
                                        @PathVariable int id) throws Exception {
         return productService.getProductById(id);
     }
 
-    //get actualizao a dto
+    // Listar todos
     @Operation(summary = "Obtiene todas los productos disponibles")
     @GetMapping("/products")
     //@ResponseBody si utilizao restcontroller no hace falta solo se usa con controller
@@ -48,7 +48,7 @@ private final ProductService productService;
         return productService.getProducts();
     }
 
-    //delete
+    // Borrar
     @Operation(summary = "Elimina una producto por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto eliminado exitosamente"),
@@ -62,7 +62,7 @@ private final ProductService productService;
         productService.deleteProductById(id);
     }
 
-    //insert corregido a dto
+    // Insertar
     @Operation(summary = "Añade un nuevo Producto")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto creado exitosamente"),
@@ -76,10 +76,14 @@ private final ProductService productService;
     }
 
 
-    //Actualizar
+    // Actualizar
     @Operation(summary = "Actualiza un producto existente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "El Producto no se ha podido actualizar")
+    })
+    @PreAuthorize("hasRole('ROLE_REGISTER_USER') and hasAuthority('REGISTER_USER_UPDATE')")
     @PutMapping("/product/{id}")
-    //@ResponseBody
     public ProductDto updateProduct(@PathVariable int id, @Parameter(description = "Objeto producto que será actualizado", required = true)
                                     @RequestBody ProductDto productDto) throws Exception {
         return productService.updateProduct(id, productDto);

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,7 @@ public class UploadController {
                     content = @Content(schema = @Schema(implementation = Category.class))),
             @ApiResponse(responseCode = "500", description = "Error al subir el fichero")
     })
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/upload")
     //ResponseEntity transforma en json las peticiones...el forntal no se enteraria si le envias un int o un string, por eso lo transforma
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
